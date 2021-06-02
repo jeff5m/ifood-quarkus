@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 public class Prato extends PanacheEntityBase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    public Long id;
     @NotBlank
     public String nome;
     @NotBlank
