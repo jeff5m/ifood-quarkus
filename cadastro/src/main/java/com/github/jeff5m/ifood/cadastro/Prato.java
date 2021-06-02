@@ -14,7 +14,6 @@ public class Prato extends PanacheEntityBase {
     public Long id;
     @NotBlank
     public String nome;
-    @NotBlank
     public String descricao;
     @ManyToOne
     public Restaurante restaurante;
