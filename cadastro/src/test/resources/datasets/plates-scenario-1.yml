@@ -1,0 +1,7 @@
+PRATO:
+  - ID: 1
+    NOME: "Novo Prato"
+    RESTAURANTE_ID: 123
+
+RESTAURANTE:
+  - ID: 123
