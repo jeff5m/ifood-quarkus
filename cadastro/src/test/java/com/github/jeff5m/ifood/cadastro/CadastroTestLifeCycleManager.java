@@ -13,7 +13,7 @@ public class CadastroTestLifeCycleManager implements QuarkusTestResourceLifecycl
     @Override
     public Map<String, String> start() {
         POSTGRES.start();
-        Map<String, String> properties = new HashMap<String, String>();
+        Map<String, String> properties = new HashMap<>();
         properties.put("quarkus.datasource.jdbc.url", POSTGRES.getJdbcUrl());
         properties.put("quarkus.datasource.username", POSTGRES.getUsername());
         properties.put("quarkus.datasource.password", POSTGRES.getPassword());

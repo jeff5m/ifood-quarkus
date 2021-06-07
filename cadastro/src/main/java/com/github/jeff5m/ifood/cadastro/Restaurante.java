@@ -11,6 +11,7 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "restaurante")
+@SuppressWarnings({"squid:S1133", "squid:S1123", "squid:S1186"})
 public class Restaurante extends PanacheEntityBase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,4 +27,18 @@ public class Restaurante extends PanacheEntityBase {
     public LocalDate dataCriacao;
     @UpdateTimestamp
     public LocalDate dataAtualizacao;
+
+    @Deprecated
+    public Restaurante() {
+    }
+
+    public Restaurante(Long id, String nome) {
+        this.id = id;
+        this.nome = nome;
+    }
+
+    public Restaurante(String nome, String proprietario) {
+        this.nome = nome;
+        this.proprietario = proprietario;
+    }
 }

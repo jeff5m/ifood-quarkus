@@ -78,14 +78,13 @@ public class RestauranteResource {
     @Path("{idRestaurante}/pratos/{id}")
     @Transactional
     @Tag(name = "prato")
-    public Response substituirPrato(@PathParam("idRestaurante") Long idRestaurante,
+    public void substituirPrato(@PathParam("idRestaurante") Long idRestaurante,
                                     @PathParam("id") Long id,
                                     Prato pratoDTO) {
         Prato pratoEncontrado = (Prato) Prato.findByIdOptional(id)
                 .orElseThrow(NotFoundException::new);
         pratoEncontrado.preco = pratoDTO.preco;
         pratoEncontrado.persist();
-        return Response.status(Response.Status.CREATED).build();
     }
 
     @DELETE
