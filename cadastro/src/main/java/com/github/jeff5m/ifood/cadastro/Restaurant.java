@@ -10,35 +10,35 @@ import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "restaurante")
+@Table(name = "restaurant")
 @SuppressWarnings({"squid:S1133", "squid:S1123", "squid:S1186"})
-public class Restaurante extends PanacheEntityBase {
+public class Restaurant extends PanacheEntityBase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
-    public String proprietario;
+    public String owner;
     @CNPJ
     public String cnpj;
     @NotBlank
-    public String nome;
+    public String name;
     @ManyToOne
-    public Localizacao localizacao;
+    public Localization localization;
     @CreationTimestamp
-    public LocalDate dataCriacao;
+    public LocalDate createdAt;
     @UpdateTimestamp
-    public LocalDate dataAtualizacao;
+    public LocalDate updatedAt;
 
     @Deprecated
-    public Restaurante() {
+    public Restaurant() {
     }
 
-    public Restaurante(Long id, String nome) {
+    public Restaurant(Long id, String name) {
         this.id = id;
-        this.nome = nome;
+        this.name = name;
     }
 
-    public Restaurante(String nome, String proprietario) {
-        this.nome = nome;
-        this.proprietario = proprietario;
+    public Restaurant(String name, String owner) {
+        this.name = name;
+        this.owner = owner;
     }
 }

@@ -1,7 +1,7 @@
-PRATO:
+PLATE:
   - ID: 1
-    NOME: "Novo Prato"
-    RESTAURANTE_ID: 123
+    NAME: "New Plate"
+    RESTAURANT_ID: 123
 
-RESTAURANTE:
+RESTAURANT:
   - ID: 123

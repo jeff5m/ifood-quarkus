@@ -1,13 +1,13 @@
 package util;
 
-import com.github.jeff5m.ifood.cadastro.Restaurante;
+import com.github.jeff5m.ifood.cadastro.Restaurant;
 
 public class RestaurantCreator {
-    public static Restaurante createValidRestaurantToBeSaved() {
-        return new Restaurante("Restaurante a ser salvo", "Novo ID do keyclok");
+    public static Restaurant createValidRestaurantToBeSaved() {
+        return new Restaurant("Restaurant To Be Saved", "New Id KeyClok");
     }
 
-    public static Restaurante createValidRestaurant() {
-        return new Restaurante(123L, "Restaurante teste");
+    public static Restaurant createValidRestaurant() {
+        return new Restaurant(123L, "Restaurant Test");
     }
 }

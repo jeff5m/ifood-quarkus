@@ -1,9 +1,9 @@
 package util;
 
-import com.github.jeff5m.ifood.cadastro.Prato;
+import com.github.jeff5m.ifood.cadastro.Plate;
 
 public class PlateCreator {
-    public static Prato createValidPlateToBeSaved() {
-        return new Prato("Prato a ser salvo", RestaurantCreator.createValidRestaurant());
+    public static Plate createValidPlateToBeSaved() {
+        return new Plate("Plate To Be Saved", RestaurantCreator.createValidRestaurant());
     }
 }

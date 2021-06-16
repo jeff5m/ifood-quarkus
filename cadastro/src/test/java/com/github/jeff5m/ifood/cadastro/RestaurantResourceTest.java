@@ -23,15 +23,15 @@ import static io.restassured.RestAssured.given;
 @QuarkusTestResource(CadastroTestLifeCycleManager.class)
 @DBRider
 @DBUnit(caseInsensitiveStrategy = Orthography.LOWERCASE)
-@DataSet(cleanBefore = true, cleanAfter = true)
-class RestauranteResourceTest {
+@DataSet(cleanAfter = true, disableConstraints = true)
+class RestaurantResourceTest {
 
     @Test
-    @DisplayName("buscar returns list of restaurants when successful")
+    @DisplayName("find returns list of restaurants when successful")
     @DataSet("restaurants-scenario-1.yml")
-    void buscar_ReturnsListOfRestaurants_WhenSuccessful() {
+    void find_ReturnsListOfRestaurants_WhenSuccessful() {
         String result = given()
-                .when().get("/restaurantes")
+                .when().get("/restaurants")
                 .then()
                 .statusCode(Response.Status.OK.getStatusCode())
                 .extract().asString();
@@ -39,96 +39,96 @@ class RestauranteResourceTest {
     }
 
     @Test
-    @DisplayName("salvar returns status code 201 when successful")
-    void salvar_ReturnsStatusCode201_WhenSuccessful() {
+    @DisplayName("save returns status code 201 when successful")
+    void save_ReturnsStatusCode201_WhenSuccessful() {
         given().when()
                 .contentType(ContentType.JSON)
                 .body(RestaurantCreator.createValidRestaurantToBeSaved())
-                .post("/restaurantes")
+                .post("/restaurants")
                 .then()
                 .statusCode(Response.Status.CREATED.getStatusCode());
     }
 
     @Test
-    @DisplayName("substituir updates restaurant and returns status code 204 when successful")
+    @DisplayName("replace updates restaurant and returns status code 204 when successful")
     @DataSet("restaurants-scenario-1.yml")
-    void substituir_UpdatesRestaurantAndReturnsStatusCode204_WhenSuccessful() {
-        Restaurante restaurantDTO = new Restaurante("Restaurante atualizado", "ID do keyclok");
+    void replace_UpdatesRestaurantAndReturnsStatusCode204_WhenSuccessful() {
+        Restaurant restaurantDTO = new Restaurant("Restaurant", "ID do keyclok");
         restaurantDTO.id = 123L;
-        restaurantDTO.nome = "Restaurante Atualizado";
+        restaurantDTO.name = "Updated Restaurant";
         ValidatableResponse response = given()
                 .with()
                 .contentType(ContentType.JSON)
                 .pathParam("id", restaurantDTO.id)
                 .body(restaurantDTO)
                 .when()
-                .put("/restaurantes/{id}")
+                .put("/restaurants/{id}")
                 .then()
                 .statusCode(Response.Status.NO_CONTENT.getStatusCode());
-        Restaurante foundedRestaurant = Restaurante.findById(restaurantDTO.id);
+        Restaurant foundedRestaurant = Restaurant.findById(restaurantDTO.id);
 
         Assertions.assertThat(response).isNotNull();
         Assertions.assertThat(response.extract().statusCode())
                 .isEqualTo(Response.Status.NO_CONTENT.getStatusCode());
-        Assertions.assertThat(foundedRestaurant.nome)
+        Assertions.assertThat(foundedRestaurant.name)
                 .isNotNull()
                 .isNotEmpty();
         Assertions.assertThat(restaurantDTO.id)
                 .isEqualTo(foundedRestaurant.id);
-        Assertions.assertThat(restaurantDTO.nome)
-                .isEqualTo(foundedRestaurant.nome);
+        Assertions.assertThat(restaurantDTO.name)
+                .isEqualTo(foundedRestaurant.name);
     }
 
     @Test
-    @DisplayName("deletar deletes a restaurant and returns status code 204 when successful")
+    @DisplayName("delete deletes a restaurant and returns status code 204 when successful")
     @DataSet("restaurants-scenario-1.yml")
-    void deletar_DeletesARestaurantAndReturnsStatusCode204_WhenSuccessful() {
+    void delete_DeletesARestaurantAndReturnsStatusCode204_WhenSuccessful() {
         Long idToBeDeleted = 123L;
         given()
                 .with()
                 .pathParam("id", idToBeDeleted)
                 .when()
-                .delete("/restaurantes/{id}")
+                .delete("/restaurants/{id}")
                 .then()
                 .statusCode(Response.Status.NO_CONTENT.getStatusCode());
     }
 
     @Test
-    @DisplayName("buscar returns list of plates in a restaurants when successful")
+    @DisplayName("find returns list of plates in a restaurants when successful")
     @DataSet(value = "plates-scenario-1.yml", cleanAfter = true)
-    void buscar_ReturnsListOfPlatesInARestaurant_WhenSuccessful() {
+    void find_ReturnsListOfPlatesInARestaurant_WhenSuccessful() {
         given()
                 .with()
-                .pathParam("idRestaurante", 123)
+                .pathParam("idRestaurant", 123)
                 .when()
-                .get("/restaurantes/{idRestaurante}/pratos")
+                .get("/restaurants/{idRestaurant}/plates")
                 .then()
                 .statusCode(Response.Status.OK.getStatusCode());
     }
 
     @Test
-    @DisplayName("buscar returns status 404 if no restaurant is found")
-    void buscar_ReturnsStatus404_IfNoRestaurantIsFound() {
+    @DisplayName("find returns status 404 if no restaurant is found")
+    void find_ReturnsStatus404_IfNoRestaurantIsFound() {
         given()
                 .with()
-                .pathParam("idRestaurante", 1)
+                .pathParam("idRestaurant", 1)
                 .when()
-                .get("/restaurantes/{idRestaurante}/pratos")
+                .get("/restaurants/{idRestaurant}/plates")
                 .then()
                 .statusCode(Response.Status.NOT_FOUND.getStatusCode());
     }
 
     @Test
-    @DisplayName("salvarPrato returns status code 201 when successful")
+    @DisplayName("savePlate returns status code 201 when successful")
     @DataSet("restaurants-scenario-1.yml")
-    void salvarPrato_ReturnsStatusCode201_WhenSuccessful() {
+    void savePlate_ReturnsStatusCode201_WhenSuccessful() {
         ValidatableResponse response = given()
                 .with()
-                .pathParam("idRestaurante", 123)
+                .pathParam("idRestaurant", 123)
                 .when()
                 .contentType(ContentType.JSON)
                 .body(PlateCreator.createValidPlateToBeSaved())
-                .post("/restaurantes/{idRestaurante}/pratos")
+                .post("/restaurants/{idRestaurant}/plates")
                 .then()
                 .statusCode(Response.Status.CREATED.getStatusCode());
 
@@ -139,15 +139,15 @@ class RestauranteResourceTest {
 
 
     @Test
-    @DisplayName("salvarPrato returns status code 404 if no restaurant is found")
-    void salvarPrato_ReturnsStatus404_IfNoRestaurantIsFound() {
+    @DisplayName("savePlate returns status code 404 if no restaurant is found")
+    void savePlate_ReturnsStatus404_IfNoRestaurantIsFound() {
         ValidatableResponse response = given()
                 .with()
-                .pathParam("idRestaurante", 1)
+                .pathParam("idRestaurant", 1)
                 .when()
                 .contentType(ContentType.JSON)
                 .body(PlateCreator.createValidPlateToBeSaved())
-                .post("/restaurantes/{idRestaurante}/pratos")
+                .post("/restaurants/{idRestaurant}/plates")
                 .then()
                 .statusCode(Response.Status.NOT_FOUND.getStatusCode());
 
@@ -157,35 +157,35 @@ class RestauranteResourceTest {
     }
 
     @Test
-    @DisplayName("substituir updates plate and returns status code 204 when successful")
+    @DisplayName("replace updates plate and returns status code 204 when successful")
     @DataSet("plates-scenario-1.yml")
-    void substituir_UpdatesPlateAndReturnsStatusCode204_WhenSuccessful() {
-        Prato plateDTO = new Prato("Restaurante atualizado", RestaurantCreator.createValidRestaurant());
+    void replace_UpdatesPlateAndReturnsStatusCode204_WhenSuccessful() {
+        Plate plateDTO = new Plate("Updated Restaurant", RestaurantCreator.createValidRestaurant());
         plateDTO.id = 1L;
-        plateDTO.nome = "Prato Atualizado";
-        ValidatableResponse response = given()
+        plateDTO.name = "Updated Plate";
+        given()
                 .with()
                 .contentType(ContentType.JSON)
-                .pathParam("idRestaurante", 123L)
+                .pathParam("idRestaurant", 123L)
                 .pathParam("id", plateDTO.id)
                 .body(plateDTO)
                 .when()
-                .put("/restaurantes/{idRestaurante}/pratos/{id}")
+                .put("/restaurants/{idRestaurant}/plates/{id}")
                 .then()
                 .statusCode(Response.Status.NO_CONTENT.getStatusCode());
     }
 
     @Test
-    @DisplayName("deletar deletes a plate and returns status code 204 when successful")
+    @DisplayName("delete deletes a plate and returns status code 204 when successful")
     @DataSet("plates-scenario-1.yml")
-    void deletar_DeletesAPlateAndReturnsStatusCode204_WhenSuccessful() {
+    void delete_DeletesAPlateAndReturnsStatusCode204_WhenSuccessful() {
         Long idToBeDeleted = 1L;
         given()
                 .with()
-                .pathParam("idRestaurante", 123L)
+                .pathParam("idRestaurant", 123L)
                 .pathParam("id", idToBeDeleted)
                 .when()
-                .delete("/restaurantes/{idRestaurante}/pratos/{id}")
+                .delete("/restaurants/{idRestaurant}/plates/{id}")
                 .then()
                 .statusCode(Response.Status.NO_CONTENT.getStatusCode());
     }
