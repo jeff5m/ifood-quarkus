@@ -1,7 +1,12 @@
 package com.github.jeff5m.ifood.cadastro;
 
+import com.github.jeff5m.ifood.cadastro.dto.restaurante.AdicionarRestauranteDTO;
+import com.github.jeff5m.ifood.cadastro.dto.restaurante.AtualizarRestauranteDTO;
+import com.github.jeff5m.ifood.cadastro.dto.restaurante.RestauranteResponseDTO;
+import com.github.jeff5m.ifood.cadastro.dto.restaurante.RestauranteMapper;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
+import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -14,17 +19,21 @@ import java.util.List;
 @Tag(name = "restaurante")
 public class RestauranteResource {
 
+    @Inject
+    RestauranteMapper restauranteMapper;
+
     @GET
     @Tag(name = "restaurante")
-    public List<Restaurante> buscar() {
-        return Restaurante.listAll();
+    public List<RestauranteResponseDTO> buscar() {
+        return restauranteMapper.toListOfRestaurantResponseDTO(Restaurante.listAll());
     }
 
     @POST
     @Transactional
     @Tag(name = "restaurante")
-    public Response salvar(Restaurante restauranteDTO) {
-        restauranteDTO.persist();
+    public Response salvar(AdicionarRestauranteDTO restauranteDTO) {
+        Restaurante restaurante = restauranteMapper.toRestaurante(restauranteDTO);
+        restaurante.persist();
         return Response.status(Response.Status.CREATED).build();
     }
 
@@ -32,11 +41,11 @@ public class RestauranteResource {
     @Path("{id}")
     @Transactional
     @Tag(name = "restaurante")
-    public void substituir(@PathParam("id") Long id, Restaurante restauranteDTOPut) {
+    public void substituir(@PathParam("id") Long id, AtualizarRestauranteDTO atualizarRestauranteDTO) {
         Restaurante restauranteSalvo = (Restaurante) Restaurante.findByIdOptional(id)
                 .orElseThrow(NotFoundException::new);
-        restauranteSalvo.nome = restauranteDTOPut.nome;
-        restauranteSalvo.persist();
+        Restaurante restaurante = restauranteMapper.toRestaurante(atualizarRestauranteDTO, restauranteSalvo);
+        restaurante.persist();
     }
 
     @DELETE
@@ -79,8 +88,8 @@ public class RestauranteResource {
     @Transactional
     @Tag(name = "prato")
     public void substituirPrato(@PathParam("idRestaurante") Long idRestaurante,
-                                    @PathParam("id") Long id,
-                                    Prato pratoDTO) {
+                                @PathParam("id") Long id,
+                                Prato pratoDTO) {
         Prato pratoEncontrado = (Prato) Prato.findByIdOptional(id)
                 .orElseThrow(NotFoundException::new);
         pratoEncontrado.preco = pratoDTO.preco;
