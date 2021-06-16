@@ -23,7 +23,7 @@ import static io.restassured.RestAssured.given;
 @QuarkusTestResource(CadastroTestLifeCycleManager.class)
 @DBRider
 @DBUnit(caseInsensitiveStrategy = Orthography.LOWERCASE)
-@DataSet(cleanAfter = true)
+@DataSet(cleanBefore = true, cleanAfter = true)
 class RestauranteResourceTest {
 
     @Test
@@ -139,7 +139,7 @@ class RestauranteResourceTest {
 
 
     @Test
-    @DisplayName("salvarPrato returns status code 201 when successful")
+    @DisplayName("salvarPrato returns status code 404 if no restaurant is found")
     void salvarPrato_ReturnsStatus404_IfNoRestaurantIsFound() {
         ValidatableResponse response = given()
                 .with()
@@ -171,6 +171,21 @@ class RestauranteResourceTest {
                 .body(plateDTO)
                 .when()
                 .put("/restaurantes/{idRestaurante}/pratos/{id}")
+                .then()
+                .statusCode(Response.Status.NO_CONTENT.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("deletar deletes a plate and returns status code 204 when successful")
+    @DataSet("plates-scenario-1.yml")
+    void deletar_DeletesAPlateAndReturnsStatusCode204_WhenSuccessful() {
+        Long idToBeDeleted = 1L;
+        given()
+                .with()
+                .pathParam("idRestaurante", 123L)
+                .pathParam("id", idToBeDeleted)
+                .when()
+                .delete("/restaurantes/{idRestaurante}/pratos/{id}")
                 .then()
                 .statusCode(Response.Status.NO_CONTENT.getStatusCode());
     }
