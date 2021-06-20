@@ -1,7 +1,10 @@
 package com.github.jeff5m.ifood.cadastro;
 
+import com.github.jeff5m.ifood.cadastro.dto.AdicionarRestauranteDTO;
+import com.github.jeff5m.ifood.cadastro.dto.RestauranteMapper;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
+import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -14,6 +17,9 @@ import java.util.List;
 @Tag(name = "restaurante")
 public class RestauranteResource {
 
+    @Inject
+    RestauranteMapper restauranteMapper;
+
     @GET
     @Tag(name = "restaurante")
     public List<Restaurante> buscar() {
@@ -23,8 +29,9 @@ public class RestauranteResource {
     @POST
     @Transactional
     @Tag(name = "restaurante")
-    public Response salvar(Restaurante restauranteDTO) {
-        restauranteDTO.persist();
+    public Response salvar(AdicionarRestauranteDTO restauranteDTO) {
+        Restaurante restaurante = restauranteMapper.toRestaurante(restauranteDTO);
+        restaurante.persist();
         return Response.status(Response.Status.CREATED).build();
     }
 
@@ -78,14 +85,13 @@ public class RestauranteResource {
     @Path("{idRestaurante}/pratos/{id}")
     @Transactional
     @Tag(name = "prato")
-    public Response substituirPrato(@PathParam("idRestaurante") Long idRestaurante,
+    public void substituirPrato(@PathParam("idRestaurante") Long idRestaurante,
                                     @PathParam("id") Long id,
                                     Prato pratoDTO) {
         Prato pratoEncontrado = (Prato) Prato.findByIdOptional(id)
                 .orElseThrow(NotFoundException::new);
         pratoEncontrado.preco = pratoDTO.preco;
         pratoEncontrado.persist();
-        return Response.status(Response.Status.CREATED).build();
     }
 
     @DELETE
