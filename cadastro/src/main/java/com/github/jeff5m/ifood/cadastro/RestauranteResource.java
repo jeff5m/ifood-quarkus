@@ -1,9 +1,7 @@
 package com.github.jeff5m.ifood.cadastro;
 
-import com.github.jeff5m.ifood.cadastro.dto.restaurante.AdicionarRestauranteDTO;
-import com.github.jeff5m.ifood.cadastro.dto.restaurante.AtualizarRestauranteDTO;
-import com.github.jeff5m.ifood.cadastro.dto.restaurante.RestauranteResponseDTO;
-import com.github.jeff5m.ifood.cadastro.dto.restaurante.RestauranteMapper;
+import com.github.jeff5m.ifood.cadastro.dto.AdicionarRestauranteDTO;
+import com.github.jeff5m.ifood.cadastro.dto.RestauranteMapper;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import javax.inject.Inject;
@@ -24,8 +22,8 @@ public class RestauranteResource {
 
     @GET
     @Tag(name = "restaurante")
-    public List<RestauranteResponseDTO> buscar() {
-        return restauranteMapper.toListOfRestaurantResponseDTO(Restaurante.listAll());
+    public List<Restaurante> buscar() {
+        return Restaurante.listAll();
     }
 
     @POST
@@ -41,11 +39,11 @@ public class RestauranteResource {
     @Path("{id}")
     @Transactional
     @Tag(name = "restaurante")
-    public void substituir(@PathParam("id") Long id, AtualizarRestauranteDTO atualizarRestauranteDTO) {
+    public void substituir(@PathParam("id") Long id, Restaurante restauranteDTOPut) {
         Restaurante restauranteSalvo = (Restaurante) Restaurante.findByIdOptional(id)
                 .orElseThrow(NotFoundException::new);
-        Restaurante restaurante = restauranteMapper.toRestaurante(atualizarRestauranteDTO, restauranteSalvo);
-        restaurante.persist();
+        restauranteSalvo.nome = restauranteDTOPut.nome;
+        restauranteSalvo.persist();
     }
 
     @DELETE
@@ -88,8 +86,8 @@ public class RestauranteResource {
     @Transactional
     @Tag(name = "prato")
     public void substituirPrato(@PathParam("idRestaurante") Long idRestaurante,
-                                @PathParam("id") Long id,
-                                Prato pratoDTO) {
+                                    @PathParam("id") Long id,
+                                    Prato pratoDTO) {
         Prato pratoEncontrado = (Prato) Prato.findByIdOptional(id)
                 .orElseThrow(NotFoundException::new);
         pratoEncontrado.preco = pratoDTO.preco;
