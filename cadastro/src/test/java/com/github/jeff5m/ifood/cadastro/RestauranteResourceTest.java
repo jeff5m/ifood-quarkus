@@ -4,6 +4,7 @@ import com.github.database.rider.cdi.api.DBRider;
 import com.github.database.rider.core.api.configuration.DBUnit;
 import com.github.database.rider.core.api.configuration.Orthography;
 import com.github.database.rider.core.api.dataset.DataSet;
+import com.github.jeff5m.ifood.cadastro.dto.restaurante.AtualizarRestauranteDTO;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
@@ -53,19 +54,18 @@ class RestauranteResourceTest {
     @DisplayName("substituir updates restaurant and returns status code 204 when successful")
     @DataSet("restaurants-scenario-1.yml")
     void substituir_UpdatesRestaurantAndReturnsStatusCode204_WhenSuccessful() {
-        Restaurante restaurantDTO = new Restaurante("Restaurante atualizado", "ID do keyclok");
-        restaurantDTO.id = 123L;
-        restaurantDTO.nome = "Restaurante Atualizado";
+        AtualizarRestauranteDTO restaurantDTO = new AtualizarRestauranteDTO("Restaurante atualizado");
+        Long restaurateId = 123L;
         ValidatableResponse response = given()
                 .with()
                 .contentType(ContentType.JSON)
-                .pathParam("id", restaurantDTO.id)
+                .pathParam("id", restaurateId)
                 .body(restaurantDTO)
                 .when()
                 .put("/restaurantes/{id}")
                 .then()
                 .statusCode(Response.Status.NO_CONTENT.getStatusCode());
-        Restaurante foundedRestaurant = Restaurante.findById(restaurantDTO.id);
+        Restaurante foundedRestaurant = Restaurante.findById(restaurateId);
 
         Assertions.assertThat(response).isNotNull();
         Assertions.assertThat(response.extract().statusCode())
@@ -73,9 +73,9 @@ class RestauranteResourceTest {
         Assertions.assertThat(foundedRestaurant.nome)
                 .isNotNull()
                 .isNotEmpty();
-        Assertions.assertThat(restaurantDTO.id)
+        Assertions.assertThat(restaurateId)
                 .isEqualTo(foundedRestaurant.id);
-        Assertions.assertThat(restaurantDTO.nome)
+        Assertions.assertThat(restaurantDTO.nomeFantasia)
                 .isEqualTo(foundedRestaurant.nome);
     }
 
@@ -136,7 +136,6 @@ class RestauranteResourceTest {
         Assertions.assertThat(response.extract().statusCode())
                 .isEqualTo(Response.Status.CREATED.getStatusCode());
     }
-
 
     @Test
     @DisplayName("salvarPrato returns status code 404 if no restaurant is found")
