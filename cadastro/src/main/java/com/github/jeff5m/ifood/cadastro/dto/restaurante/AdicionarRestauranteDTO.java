@@ -7,4 +7,14 @@ public class AdicionarRestauranteDTO {
     public String cnpj;
     public String nomeFantasia;
     public LocalizacaoDTO localizacao;
+
+    public AdicionarRestauranteDTO() {
+    }
+
+    public AdicionarRestauranteDTO(String proprietario, String cnpj, String nomeFantasia, LocalizacaoDTO localizacao) {
+        this.proprietario = proprietario;
+        this.cnpj = cnpj;
+        this.nomeFantasia = nomeFantasia;
+        this.localizacao = localizacao;
+    }
 }

@@ -27,4 +27,6 @@ public interface RestauranteMapper {
 
     List<RestauranteResponseDTO> toListOfRestaurantResponseDTO(List<Restaurante> restaurantes);
 
+    @Mapping(target = "nomeFantasia", source = "nome")
+    RestauranteResponseDTO toRestaurantResponseDTO(Restaurante restaurante);
 }
