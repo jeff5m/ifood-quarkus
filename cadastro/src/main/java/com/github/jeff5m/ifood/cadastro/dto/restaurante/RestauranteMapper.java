@@ -28,5 +28,6 @@ public interface RestauranteMapper {
     List<RestauranteResponseDTO> toListOfRestaurantResponseDTO(List<Restaurante> restaurantes);
 
     @Mapping(target = "nomeFantasia", source = "nome")
+    @Mapping(target = "dataCriacao", dateFormat = "dd/MM/yyyy HH:mm:SS")
     RestauranteResponseDTO toRestaurantResponseDTO(Restaurante restaurante);
 }
