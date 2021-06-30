@@ -8,6 +8,7 @@ import org.hibernate.validator.constraints.br.CNPJ;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Entity
 @Table(name = "restaurante")
@@ -45,5 +46,9 @@ public class Restaurante extends PanacheEntityBase {
     public Restaurante(String nome, String proprietario) {
         this.nome = nome;
         this.proprietario = proprietario;
+    }
+
+    public static Restaurante findByCnpj(String cnpj) {
+        return find("cnpj", cnpj).firstResult();
     }
 }

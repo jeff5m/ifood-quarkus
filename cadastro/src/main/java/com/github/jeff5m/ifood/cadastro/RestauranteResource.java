@@ -8,10 +8,15 @@ import com.github.jeff5m.ifood.cadastro.dto.restaurante.AdicionarRestauranteDTO;
 import com.github.jeff5m.ifood.cadastro.dto.restaurante.AtualizarRestauranteDTO;
 import com.github.jeff5m.ifood.cadastro.dto.restaurante.RestauranteMapper;
 import com.github.jeff5m.ifood.cadastro.dto.restaurante.RestauranteResponseDTO;
+import com.github.jeff5m.ifood.cadastro.exceptions.ConstraintViolationImpl;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -37,8 +42,10 @@ public class RestauranteResource {
 
     @POST
     @Transactional
+    @APIResponse(responseCode = "201", description = "Caso restaturante seja adicionado com sucesso")
+    @APIResponse(responseCode = "400", content = @Content(schema = @Schema(allOf = ConstraintViolationImpl.class)))
     @Tag(name = "restaurante")
-    public Response salvar(AdicionarRestauranteDTO restauranteDTO) {
+    public Response salvar(@Valid AdicionarRestauranteDTO restauranteDTO) {
         Restaurante restaurante = restauranteMapper.toRestaurante(restauranteDTO);
         restaurante.persist();
         return Response.status(Response.Status.CREATED).build();
